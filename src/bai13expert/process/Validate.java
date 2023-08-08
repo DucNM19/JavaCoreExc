@@ -3,6 +3,8 @@ package bai13expert.process;
 import bai13expert.entities.Employee;
 
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Validate {
     public static boolean checkPhone(String phone){
@@ -15,21 +17,17 @@ public class Validate {
     }
 
     public static boolean checkEmail(String email){
-        for(int i = 0; i < email.length(); i++){
-            if(email.charAt(i) == '@')  return true;
-        }
-        return false;
+        String regex = "^[A-Za-z0-9+_.-]+@(.+)$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
     }
 
     public static boolean checkName(String name){
-        for(int i = 0; i < name.length(); i++){
-            char c = name.charAt(i);
-            if(c >= 'A' && c <= 'Z') continue;
-            if(c >= 'a' && c <= 'z') continue;
-            if(c == ' ')    continue;
-            return false;
-        }
-        return true;
+        String regex = "^[A-Za-z\\s]+$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(name);
+        return matcher.matches();
     }
     public static boolean checkDate(String date){
         //only use 1 format: DD/MM/YYYY (simplified version, uncheck corressponding days of months

@@ -19,61 +19,72 @@ public class EmployeeManagement {
             System.out.print("Creating new employee...\nInput ID: ");
             String ID = input.nextLine();
 
-            if(employees.containsKey(ID)){
+            if (employees.containsKey(ID)) {
                 System.out.println("ID already exist");
                 addEmployee();
             }
 
-            System.out.print("Input Full Name: ");
-            String fullName = input.nextLine();
-            if (!Validate.checkName(fullName)) throw new EmployeeException("Wrong name format");
+            String[] types = new String[5];
+            String[] inputNames = {"Full Name", "birthday", "phone", "email"};
 
-            System.out.print("Input birthday: ");
-            String birthday = input.nextLine();
-            if (!Validate.checkDate(birthday)) throw new EmployeeException("Wrong birthday format");
+            for (int i = 0; i < 4; i++) {
+                System.out.print("Input " + inputNames[i] + ": ");
 
-            System.out.print("Input phone: ");
-            String phone = input.nextLine();
-            if (!Validate.checkPhone(phone)) throw new EmployeeException("Wrong phone format");
+                do {
+                    types[i] = input.nextLine();
 
-            System.out.print("Input email: ");
-            String email = input.nextLine();
-            if (!Validate.checkEmail(email)) throw new EmployeeException("Wrong email format");
+                    if (!Validate.checkGeneral(types[i], i)) {
+                        System.out.println("Wrong " + inputNames[i] + " format, please enter again!");
+                        //throw is only use for debugging
+                        //throw new EmployeeException("Wrong " + inputNames[i] + " format, please enter again!");
+                    }
+                } while (!Validate.checkGeneral(types[i], i));
+            }
 
             System.out.print("Input employee type(0 Experience, 1 Fresher, 2 Intern): ");
             int employeeType = Integer.parseInt(input.nextLine());
 
-            switch (employeeType) {
-                case 0 -> {
-                    System.out.print("Input year of experience: ");
-                    int yoe = Integer.parseInt(input.nextLine());
-                    System.out.print("Input pro skill: ");
-                    String proskill = input.nextLine();
-                    employees.put(ID, new Experience(ID, fullName, birthday, phone, email, 0, yoe, proskill));
+            do {
+                switch (employeeType) {
+                    case 0 -> {
+                        System.out.print("Input year of experience: ");
+                        int yoe = Integer.parseInt(input.nextLine());
+                        System.out.print("Input pro skill: ");
+                        String proskill = input.nextLine();
+                        employees.put(ID, new Experience(ID, types[0], types[1], types[2], types[3],
+                                0, yoe, proskill));
+                    }
+                    case 1 -> {
+                        System.out.print("Input graduation year: ");
+                        int graduationYear = Integer.parseInt(input.nextLine());
+                        System.out.print("Input graduation rank: ");
+                        String graduationRank = input.nextLine();
+                        System.out.print("Input education: ");
+                        String education = input.nextLine();
+                        employees.put(ID, new Fresher(ID, types[0], types[1], types[2], types[3],
+                                1, graduationYear, graduationRank, education));
+                    }
+                    case 2 -> {
+                        System.out.print("Input majors: ");
+                        String majors = input.nextLine();
+                        System.out.print("Input semester: ");
+                        int semester = Integer.parseInt(input.nextLine());
+                        System.out.print("Input university name: ");
+                        String university = input.nextLine();
+                        employees.put(ID, new Intern(ID, types[0], types[1], types[2], types[3],
+                                2, majors, semester, university));
+                    }
                 }
-                case 1 -> {
-                    System.out.print("Input graduation year: ");
-                    int graduationYear = Integer.parseInt(input.nextLine());
-                    System.out.print("Input graduation rank: ");
-                    String graduationRank = input.nextLine();
-                    System.out.print("Input education: ");
-                    String education = input.nextLine();
-                    employees.put(ID, new Fresher(ID, fullName, birthday, phone, email, 1, graduationYear, graduationRank, education));
+
+                if(employeeType < 0 || employeeType > 3) {
+                    System.out.print("Not a valid number, please input again(0 to 2): ");
+                    employeeType = Integer.parseInt(input.nextLine());
                 }
-                case 2 -> {
-                    System.out.print("Input majors: ");
-                    String majors = input.nextLine();
-                    System.out.print("Input semester: ");
-                    int semester = Integer.parseInt(input.nextLine());
-                    System.out.print("Input university name: ");
-                    String university = input.nextLine();
-                    employees.put(ID, new Intern(ID, fullName, birthday, phone, email, 2, majors, semester, university));
-                }
-            }
-            employees.get(ID).addCertificates();
+
+                employees.get(ID).addCertificates();
+            } while(employeeType < 0 || employeeType > 3);
         } catch (EmployeeException | NumberFormatException e) {
-            System.out.println("Please enter information again");
-            addEmployee();
+            System.out.println(e);
         }
     }
 
@@ -88,12 +99,13 @@ public class EmployeeManagement {
 
     public static void writeObjectListToMap() {
         try {
-            FileOutputStream file = new FileOutputStream("D:\\Users\\DucNM\\DH\\Code\\LTLT\\FsoftFresher\\JavaTest\\BasicExcercise\\src\\bai13expert\\data\\employeeList.txt");
+            FileOutputStream file = new FileOutputStream("src/bai13expert/data/baseEmployee.txt");
             ObjectOutputStream out = new ObjectOutputStream(file);
 
             out.writeObject(employees);
 
             out.close();
+            file.flush();
             file.close();
             System.out.println("Write successful");
         } catch (IOException e) {
@@ -101,18 +113,20 @@ public class EmployeeManagement {
         }
     }
 
-    public static void addEmployeeByFile() {
+    public static void printEmployeeFromFile() {
         try {
-            FileInputStream file = new FileInputStream("D:\\Users\\DucNM\\DH\\Code\\LTLT\\FsoftFresher\\JavaTest\\BasicExcercise\\src\\bai13expert\\data\\baseEmployee.txt");
+            FileInputStream file = new FileInputStream("src/bai13expert/data/baseEmployee.txt");
             ObjectInputStream in = new ObjectInputStream(file);
 
             Map<String, Employee> baseEmployee = (Map<String, Employee>) in.readObject();
-            employees.putAll(baseEmployee);
+
+            baseEmployee.forEach((key, value) -> System.out.println(value));
 
             in.close();
             file.close();
 
-            System.out.println("Add successful!");
+        } catch (EOFException e) {
+            System.out.println("File empty!");
         } catch (IOException e) {
             System.out.println("IO exception found!");
         } catch (Exception e) {
@@ -170,7 +184,7 @@ public class EmployeeManagement {
                 case 1 -> addEmployee();
                 case 2 -> showAllEmployees();
                 case 3 -> writeObjectListToMap();
-                case 4 -> addEmployeeByFile();
+                case 4 -> printEmployeeFromFile();
                 case 5 -> showSpecific();
                 case 6 -> modifyEmployee();
                 case 7 -> deleteEmployee();

@@ -11,6 +11,7 @@ import java.util.*;
 
 public class EmployeeManagement {
     private static Map<String, Employee> employees = new HashMap<>();
+    private static final String[] inputNames = {"Full Name", "birthday", "phone", "email"};
 
     public static void addEmployee() {
         try {
@@ -24,8 +25,7 @@ public class EmployeeManagement {
                 addEmployee();
             }
 
-            String[] types = new String[5];
-            String[] inputNames = {"Full Name", "birthday", "phone", "email"};
+            String[] types = new String[4];
 
             for (int i = 0; i < 4; i++) {
                 System.out.print("Input " + inputNames[i] + ": ");
@@ -99,7 +99,7 @@ public class EmployeeManagement {
 
     public static void writeObjectListToMap() {
         try {
-            FileOutputStream file = new FileOutputStream("src/bai13expert/data/baseEmployee.txt");
+            FileOutputStream file = new FileOutputStream("src/bai13expert/data/baseEmployee.txt", true);
             ObjectOutputStream out = new ObjectOutputStream(file);
 
             out.writeObject(employees);
@@ -150,28 +150,24 @@ public class EmployeeManagement {
         Scanner input = new Scanner(System.in);
         System.out.print("Input ID: ");
         String ID = input.nextLine();
-        if(employees.containsKey(ID)) {
-            System.out.print("Input Full Name: ");
-            String fullName = input.nextLine();
-            if (!Validate.checkName(fullName)) throw new EmployeeException("Wrong name format");
-            employees.get(ID).setFullName(fullName);
-
-            System.out.print("Input birthday: ");
-            String birthday = input.nextLine();
-            if (!Validate.checkDate(birthday)) throw new EmployeeException("Wrong birthday format");
-            employees.get(ID).setBirthDay(birthday);
-
-            System.out.print("Input phone: ");
-            String phone = input.nextLine();
-            if (!Validate.checkPhone(phone)) throw new EmployeeException("Wrong phone format");
-            employees.get(ID).setPhone(phone);
-
-            System.out.print("Input email: ");
-            String email = input.nextLine();
-            if (!Validate.checkEmail(email)) throw new EmployeeException("Wrong email format");
-            employees.get(ID).setEmail(email);
+        if(!employees.containsKey(ID)) {
+            System.out.println("ID not found");
+            return;
         }
-        else System.out.println("ID not found");
+        String[] types = new String[4];
+        for (int i = 0; i < 4; i++) {
+            System.out.print("Input " + inputNames[i] + ": ");
+            do {
+                types[i] = input.nextLine();
+                if (!Validate.checkGeneral(types[i], i)) {
+                    System.out.println("Wrong " + inputNames[i] + " format, please enter again!");
+                }
+            } while (!Validate.checkGeneral(types[i], i));
+        }
+        employees.get(ID).setFullName(types[0]);
+        employees.get(ID).setBirthDay(types[1]);
+        employees.get(ID).setPhone(types[2]);
+        employees.get(ID).setEmail(types[3]);
     }
 
     public static void main(String[] args) {

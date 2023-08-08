@@ -35,7 +35,7 @@ public class EmployeeManagement {
 
                     if (!Validate.checkGeneral(types[i], i)) {
                         System.out.println("Wrong " + inputNames[i] + " format, please enter again!");
-                        //throw is only use for debugging
+                        //throw is only use for debugging.
                         //throw new EmployeeException("Wrong " + inputNames[i] + " format, please enter again!");
                     }
                 } while (!Validate.checkGeneral(types[i], i));

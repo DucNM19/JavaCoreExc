@@ -16,6 +16,7 @@ public class Validate {
             case 1 -> result = checkDate(s);
             case 2 -> result = checkPhone(s);
             case 3 -> result = checkEmail(s);
+            case 4 -> result = checkEmployeeType(s);
         }
         return result;
     }
@@ -49,4 +50,7 @@ public class Validate {
         return matcher.matches();
     }
 
+    public static boolean checkEmployeeType(String employeeType) {
+        return employeeType.equals("0") || employeeType.equals("1") || employeeType.equals("2");
+    }
 }

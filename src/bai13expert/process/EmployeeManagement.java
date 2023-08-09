@@ -11,7 +11,7 @@ import java.util.*;
 
 public class EmployeeManagement {
     private static Map<String, Employee> employees = new HashMap<>();
-    private static final String[] inputNames = {"Full Name", "birthday", "phone", "email"};
+    private static final String[] inputNames = {"Full Name", "birthday", "phone", "email", "employee type"};
 
     public static void addEmployee() {
         try {
@@ -25,9 +25,9 @@ public class EmployeeManagement {
                 addEmployee();
             }
 
-            String[] types = new String[4];
+            String[] types = new String[5];
 
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < 5; i++) {
                 System.out.print("Input " + inputNames[i] + ": ");
 
                 do {
@@ -40,49 +40,38 @@ public class EmployeeManagement {
                     }
                 } while (!Validate.checkGeneral(types[i], i));
             }
-
-            System.out.print("Input employee type(0 Experience, 1 Fresher, 2 Intern): ");
-            int employeeType = Integer.parseInt(input.nextLine());
-
-            do {
-                switch (employeeType) {
-                    case 0 -> {
-                        System.out.print("Input year of experience: ");
-                        int yoe = Integer.parseInt(input.nextLine());
-                        System.out.print("Input pro skill: ");
-                        String proskill = input.nextLine();
-                        employees.put(ID, new Experience(ID, types[0], types[1], types[2], types[3],
-                                0, yoe, proskill));
-                    }
-                    case 1 -> {
-                        System.out.print("Input graduation year: ");
-                        int graduationYear = Integer.parseInt(input.nextLine());
-                        System.out.print("Input graduation rank: ");
-                        String graduationRank = input.nextLine();
-                        System.out.print("Input education: ");
-                        String education = input.nextLine();
-                        employees.put(ID, new Fresher(ID, types[0], types[1], types[2], types[3],
-                                1, graduationYear, graduationRank, education));
-                    }
-                    case 2 -> {
-                        System.out.print("Input majors: ");
-                        String majors = input.nextLine();
-                        System.out.print("Input semester: ");
-                        int semester = Integer.parseInt(input.nextLine());
-                        System.out.print("Input university name: ");
-                        String university = input.nextLine();
-                        employees.put(ID, new Intern(ID, types[0], types[1], types[2], types[3],
-                                2, majors, semester, university));
-                    }
+            int employeeType = Integer.parseInt(types[4]);
+            switch (employeeType) {
+                case 0 -> {
+                    System.out.print("Input year of experience: ");
+                    int yoe = Integer.parseInt(input.nextLine());
+                    System.out.print("Input pro skill: ");
+                    String proskill = input.nextLine();
+                    employees.put(ID, new Experience(ID, types[0], types[1], types[2], types[3],
+                            0, yoe, proskill));
                 }
-
-                if(employeeType < 0 || employeeType > 3) {
-                    System.out.print("Not a valid number, please input again(0 to 2): ");
-                    employeeType = Integer.parseInt(input.nextLine());
+                case 1 -> {
+                    System.out.print("Input graduation year: ");
+                    int graduationYear = Integer.parseInt(input.nextLine());
+                    System.out.print("Input graduation rank: ");
+                    String graduationRank = input.nextLine();
+                    System.out.print("Input education: ");
+                    String education = input.nextLine();
+                    employees.put(ID, new Fresher(ID, types[0], types[1], types[2], types[3],
+                            1, graduationYear, graduationRank, education));
                 }
-
-                employees.get(ID).addCertificates();
-            } while(employeeType < 0 || employeeType > 3);
+                case 2 -> {
+                    System.out.print("Input majors: ");
+                    String majors = input.nextLine();
+                    System.out.print("Input semester: ");
+                    int semester = Integer.parseInt(input.nextLine());
+                    System.out.print("Input university name: ");
+                    String university = input.nextLine();
+                    employees.put(ID, new Intern(ID, types[0], types[1], types[2], types[3],
+                            2, majors, semester, university));
+                }
+            }
+            employees.get(ID).addCertificates();
         } catch (EmployeeException | NumberFormatException e) {
             System.out.println(e);
         }
